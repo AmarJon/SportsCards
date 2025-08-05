@@ -41,6 +41,12 @@ function ViewCards() {
       setLoading(true);
       const user = auth.currentUser;
       
+      if (!user) {
+        setError('User not authenticated');
+        setLoading(false);
+        return;
+      }
+      
       // Query cards for the current user
       const q = query(
         collection(db, 'cards'),
@@ -74,6 +80,7 @@ function ViewCards() {
   // Handle actual deletion after confirmation
   const handleConfirmDelete = async () => {
     try {
+      // Delete from the original flat collection structure
       await deleteDoc(doc(db, 'cards', cardToDelete));
       showToast('Card deleted successfully!', 'success');
       fetchCards(); // Refresh the cards list

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { db, auth } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import { getManufacturersForSport } from '../data/manufacturers';
@@ -20,6 +20,7 @@ function AddCard() {
   const [availableManufacturers, setAvailableManufacturers] = useState([]);
   const [availableSets, setAvailableSets] = useState([]);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+  const [loading, setLoading] = useState(false);
 
   const showToast = (message, type = 'success') => {
     setToast({ show: true, message, type });
@@ -32,30 +33,48 @@ function AddCard() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (!auth.currentUser) {
+      alert('Please log in to add a card.');
+      return;
+    }
+
     try {
-      const user = auth.currentUser;
+      setLoading(true);
       
-      const docRef = await addDoc(collection(db, 'cards'), {
-        ...formData,
-        userId: user.uid,
-        createdAt: new Date()
-      });
-      
-      showToast('Card added successfully!', 'success');
-      
+      const cardData = {
+        player: formData.player,
+        year: formData.year,
+        manufacturer: formData.manufacturer,
+        sport: formData.sport,
+        set: formData.set || '',
+        cardNumber: formData.cardNumber || '',
+        graded: formData.graded,
+        grade: formData.grade || '',
+        notes: formData.notes || '',
+        createdAt: new Date(),
+        userId: auth.currentUser.uid
+      };
+
+      // Add card to the original flat collection structure
+      await addDoc(collection(db, 'cards'), cardData);
+
       setFormData({
-        sport: '',
-        manufacturer: '',
-        set: '',
-        year: '',
         player: '',
+        year: '',
+        manufacturer: '',
+        sport: '',
+        set: '',
         cardNumber: '',
-        graded: '',
+        graded: 'No',
         grade: '',
         notes: ''
       });
-      
+
+      setLoading(false);
+      showToast('Card added successfully!', 'success');
     } catch (error) {
+      console.error('Error adding card: ', error);
+      setLoading(false);
       showToast('Error adding card: ' + error.message, 'error');
     }
   };
@@ -240,8 +259,9 @@ function AddCard() {
           <button 
             type="submit" 
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-105"
+            disabled={loading}
           >
-            Add Card
+            {loading ? 'Adding...' : 'Add Card'}
           </button>
         </form>
       </div>

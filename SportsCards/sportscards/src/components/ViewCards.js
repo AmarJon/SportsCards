@@ -4,6 +4,7 @@ import { collection, query, where, getDocs, deleteDoc, doc } from 'firebase/fire
 import { getManufacturersForSport } from '../data/manufacturers';
 import { getSetsForManufacturer } from '../data/sets';
 import CardDetailModal from './CardDetailModal';
+import EditCardModal from './EditCardModal';
 import ConfirmModal from './ConfirmModal';
 import Toast from './Toast';
 
@@ -23,6 +24,7 @@ function ViewCards() {
   const [viewMode, setViewMode] = useState('grid'); // 'grid', 'compact', 'list'
   const [selectedCard, setSelectedCard] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [cardToDelete, setCardToDelete] = useState(null);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
@@ -86,6 +88,12 @@ function ViewCards() {
   const handleCardClick = (card) => {
     setSelectedCard(card);
     setShowModal(true);
+  };
+
+  // Handle edit card
+  const handleEditCard = (card) => {
+    setSelectedCard(card);
+    setShowEditModal(true);
   };
 
   // Handle delete from modal
@@ -372,15 +380,26 @@ function ViewCards() {
                       <h3 className="text-xl font-semibold text-gray-900">
                         {card.player}
                       </h3>
-                      <button 
-                        onClick={() => deleteCard(card.id)}
-                        className="text-red-500 hover:text-red-700 transition duration-200"
-                        title="Delete card"
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
+                      <div className="flex space-x-2">
+                        <button 
+                          onClick={() => handleEditCard(card)}
+                          className="text-blue-500 hover:text-blue-700 transition duration-200"
+                          title="Edit card"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </button>
+                        <button 
+                          onClick={() => deleteCard(card.id)}
+                          className="text-red-500 hover:text-red-700 transition duration-200"
+                          title="Delete card"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
                     </div>
                     
                     <div className="space-y-2 text-sm text-gray-600">
@@ -395,6 +414,9 @@ function ViewCards() {
                        )}
                       {card.graded === 'Yes' && card.grade && (
                         <p><span className="font-medium">Grade:</span> {card.grade}</p>
+                      )}
+                      {card.graded === 'Yes' && card.gradingCompany && card.gradeNumber && (
+                        <p><span className="font-medium">Graded:</span> {card.gradingCompany} {card.gradeNumber}</p>
                       )}
                       {card.graded === 'No' && (
                         <p><span className="font-medium">Graded:</span> No</p>
@@ -413,7 +435,32 @@ function ViewCards() {
                     </h4>
                     <p className="text-xs text-gray-600 mb-1">{card.year}</p>
                     <p className="text-xs text-gray-500">{card.manufacturer}</p>
-                    <p className="text-xs text-gray-400 mt-1">Click for details</p>
+                    <div className="flex justify-center space-x-2 mt-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditCard(card);
+                        }}
+                        className="text-blue-500 hover:text-blue-700 transition duration-200"
+                        title="Edit card"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteCard(card.id);
+                        }}
+                        className="text-red-500 hover:text-red-700 transition duration-200"
+                        title="Delete card"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 )}
 
@@ -423,7 +470,32 @@ function ViewCards() {
                       <h4 className="font-semibold text-gray-900">{card.player}</h4>
                       <p className="text-sm text-gray-600">{card.year} {card.manufacturer} - {card.sport}</p>
                     </div>
-                    <p className="text-xs text-gray-400">Click for details</p>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditCard(card);
+                        }}
+                        className="text-blue-500 hover:text-blue-700 transition duration-200"
+                        title="Edit card"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteCard(card.id);
+                        }}
+                        className="text-red-500 hover:text-red-700 transition duration-200"
+                        title="Delete card"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
                   </>
                 )}
               </div>
@@ -441,6 +513,18 @@ function ViewCards() {
         }}
         card={selectedCard}
         onDelete={handleDeleteFromModal}
+        onEdit={handleEditCard}
+      />
+
+      {/* Edit Card Modal */}
+      <EditCardModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false);
+          setSelectedCard(null);
+        }}
+        card={selectedCard}
+        onCardUpdated={fetchCards}
       />
 
       {/* Confirmation Modal */}

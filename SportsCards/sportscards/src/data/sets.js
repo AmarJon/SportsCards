@@ -2,6 +2,7 @@
 export const setsByManufacturer = {
   Topps: {
     Baseball: [
+      'Topps',
       'Topps Series 1',
       'Topps Series 2',
       'Topps Update',
@@ -40,6 +41,7 @@ export const setsByManufacturer = {
       'Other'
     ],
     Football: [
+      'Topps',
       'Topps Series 1',
       'Topps Series 2',
       'Topps Chrome',
@@ -67,6 +69,7 @@ export const setsByManufacturer = {
       'Other'
     ],
     Basketball: [
+      'Topps',
       'Topps Series 1',
       'Topps Series 2',
       'Topps Chrome',
@@ -94,6 +97,7 @@ export const setsByManufacturer = {
       'Other'
     ],
     Hockey: [
+      'Topps',
       'Topps Series 1',
       'Topps Series 2',
       'Topps Chrome',
@@ -121,6 +125,7 @@ export const setsByManufacturer = {
       'Other'
     ],
     Soccer: [
+      'Topps',
       'Topps Series 1',
       'Topps Series 2',
       'Topps Chrome',
@@ -177,6 +182,7 @@ export const setsByManufacturer = {
   
   Panini: {
     Football: [
+      'Panini',
       'Panini Prizm',
       'Panini Select',
       'Panini Mosaic',
@@ -208,6 +214,7 @@ export const setsByManufacturer = {
       'Other'
     ],
     Basketball: [
+      'Panini',
       'Panini Prizm',
       'Panini Select',
       'Panini Mosaic',
@@ -240,6 +247,7 @@ export const setsByManufacturer = {
       'Other'
     ],
     Hockey: [
+      'Panini',
       'Panini Prizm',
       'Panini Select',
       'Panini Mosaic',
@@ -271,6 +279,7 @@ export const setsByManufacturer = {
       'Other'
     ],
     Soccer: [
+      'Panini',
       'Panini Prizm',
       'Panini Select',
       'Panini Mosaic',
@@ -305,6 +314,7 @@ export const setsByManufacturer = {
   
   Upper_Deck: {
     Baseball: [
+      'Upper Deck',
       'Upper Deck Series 1',
       'Upper Deck Series 2',
       'Upper Deck Chrome',
@@ -332,6 +342,7 @@ export const setsByManufacturer = {
       'Other'
     ],
     Football: [
+      'Upper Deck',
       'Upper Deck Series 1',
       'Upper Deck Series 2',
       'Upper Deck Chrome',
@@ -359,6 +370,7 @@ export const setsByManufacturer = {
       'Other'
     ],
     Basketball: [
+      'Upper Deck',
       'Upper Deck Series 1',
       'Upper Deck Series 2',
       'Upper Deck Chrome',
@@ -386,6 +398,7 @@ export const setsByManufacturer = {
       'Other'
     ],
     Hockey: [
+      'Upper Deck',
       'Upper Deck Series 1',
       'Upper Deck Series 2',
       'Upper Deck Chrome',
@@ -413,6 +426,7 @@ export const setsByManufacturer = {
       'Other'
     ],
     Soccer: [
+      'Upper Deck',
       'Upper Deck Series 1',
       'Upper Deck Series 2',
       'Upper Deck Chrome',

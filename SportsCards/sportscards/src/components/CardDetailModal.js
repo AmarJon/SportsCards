@@ -1,11 +1,19 @@
 import React from 'react';
 
-function CardDetailModal({ isOpen, onClose, card, onDelete }) {
+function CardDetailModal({ isOpen, onClose, card, onDelete, onEdit }) {
   if (!isOpen || !card) return null;
 
   const handleDelete = () => {
     onDelete(card.id);
     onClose();
+  };
+
+  const handleEdit = () => {
+    onClose();
+    // Use setTimeout to ensure the detail modal closes before opening the edit modal
+    setTimeout(() => {
+      onEdit(card);
+    }, 100);
   };
 
   return (
@@ -55,6 +63,12 @@ function CardDetailModal({ isOpen, onClose, card, onDelete }) {
                 <p className="text-gray-600">{card.grade}</p>
               </div>
             )}
+            {card.graded === 'Yes' && card.gradingCompany && card.gradeNumber && (
+              <div>
+                <span className="font-medium text-gray-700">Graded:</span>
+                <p className="text-gray-600">{card.gradingCompany} {card.gradeNumber}</p>
+              </div>
+            )}
             {card.graded === 'No' && (
               <div>
                 <span className="font-medium text-gray-700">Graded:</span>
@@ -72,6 +86,12 @@ function CardDetailModal({ isOpen, onClose, card, onDelete }) {
 
           <div className="pt-4 border-t border-gray-200">
             <div className="flex space-x-4">
+              <button
+                onClick={handleEdit}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
+              >
+                Edit Card
+              </button>
               <button
                 onClick={handleDelete}
                 className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"

@@ -44,8 +44,6 @@ function AddCard() {
       
       showToast('Card added successfully!', 'success');
       
-<<<<<<< Updated upstream
-=======
       const cardData = {
         player: formData.player,
         year: formData.year,
@@ -64,7 +62,6 @@ function AddCard() {
       // Add card to the original flat collection structure
       await addDoc(collection(db, 'cards'), cardData);
 
->>>>>>> Stashed changes
       setFormData({
         sport: '',
         manufacturer: '',
@@ -72,14 +69,9 @@ function AddCard() {
         year: '',
         player: '',
         cardNumber: '',
-<<<<<<< Updated upstream
-        graded: '',
-        grade: '',
-=======
         graded: 'No',
         gradingCompany: '',
         gradeNumber: '',
->>>>>>> Stashed changes
         notes: ''
       });
       

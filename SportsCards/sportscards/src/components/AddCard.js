@@ -4,6 +4,7 @@ import { collection, addDoc } from 'firebase/firestore';
 import { getManufacturersForSport } from '../data/manufacturers';
 import { getSetsForManufacturer } from '../data/sets';
 import Toast from './Toast';
+import eventBus from '../utils/eventBus';
 
 function AddCard() {
   const [formData, setFormData] = useState({
@@ -36,31 +37,18 @@ function AddCard() {
     try {
       const user = auth.currentUser;
       
-      const docRef = await addDoc(collection(db, 'cards'), {
+      const cardData = {
         ...formData,
         userId: user.uid,
         createdAt: new Date()
-      });
+      };
+      
+      await addDoc(collection(db, 'cards'), cardData);
       
       showToast('Card added successfully!', 'success');
       
-      const cardData = {
-        player: formData.player,
-        year: formData.year,
-        manufacturer: formData.manufacturer,
-        sport: formData.sport,
-        set: formData.set || '',
-        cardNumber: formData.cardNumber || '',
-        graded: formData.graded,
-        gradingCompany: formData.gradingCompany || '',
-        gradeNumber: formData.gradeNumber || '',
-        notes: formData.notes || '',
-        createdAt: new Date(),
-        userId: auth.currentUser.uid
-      };
-
-      // Add card to the original flat collection structure
-      await addDoc(collection(db, 'cards'), cardData);
+      // Emit event to notify other components that a new card was added
+      eventBus.emit('cardAdded', cardData);
 
       setFormData({
         sport: '',
@@ -130,10 +118,11 @@ function AddCard() {
                 <option value="">Select Sport</option>
                 <option value="Baseball">Baseball</option>
                 <option value="Football">Football</option>
-                <option value="Basketball">Basketball</option>
-                <option value="Hockey">Hockey</option>
-                <option value="Soccer">Soccer</option>
-                <option value="Other">Other</option>
+                                      <option value="Basketball">Basketball</option>
+                      <option value="WNBA">WNBA</option>
+                      <option value="Hockey">Hockey</option>
+                      <option value="Soccer">Soccer</option>
+                      <option value="Other">Other</option>
               </select>
             </div>
 

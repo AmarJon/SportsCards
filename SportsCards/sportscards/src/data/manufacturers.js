@@ -37,6 +37,16 @@ export const manufacturersBySport = {
     'Other'
   ],
   
+  WNBA: [
+    'Topps',
+    'Panini',
+    'Upper Deck',
+    'Fleer',
+    'Donruss',
+    'Hoops',
+    'Other'
+  ],
+  
   Hockey: [
     'Upper Deck',
     'Topps',

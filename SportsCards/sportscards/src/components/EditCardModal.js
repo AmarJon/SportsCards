@@ -160,10 +160,11 @@ function EditCardModal({ isOpen, onClose, card, onCardUpdated }) {
                 <option value="">Select Sport</option>
                 <option value="Baseball">Baseball</option>
                 <option value="Football">Football</option>
-                <option value="Basketball">Basketball</option>
-                <option value="Hockey">Hockey</option>
-                <option value="Soccer">Soccer</option>
-                <option value="Other">Other</option>
+                                      <option value="Basketball">Basketball</option>
+                      <option value="WNBA">WNBA</option>
+                      <option value="Hockey">Hockey</option>
+                      <option value="Soccer">Soccer</option>
+                      <option value="Other">Other</option>
               </select>
             </div>
 

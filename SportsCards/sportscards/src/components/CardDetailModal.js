@@ -57,12 +57,6 @@ function CardDetailModal({ isOpen, onClose, card, onDelete, onEdit }) {
               </div>
             )}
             
-            {card.graded === 'Yes' && card.grade && (
-              <div>
-                <span className="font-medium text-gray-700">Grade:</span>
-                <p className="text-gray-600">{card.grade}</p>
-              </div>
-            )}
             {card.graded === 'Yes' && card.gradingCompany && card.gradeNumber && (
               <div>
                 <span className="font-medium text-gray-700">Graded:</span>

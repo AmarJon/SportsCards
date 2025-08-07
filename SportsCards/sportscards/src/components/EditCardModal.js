@@ -120,7 +120,14 @@ function EditCardModal({ isOpen, onClose, card, onCardUpdated }) {
 
       setLoading(false);
       showToast('Card updated successfully!', 'success');
-      onCardUpdated(); // Refresh the cards list
+      
+      // Pass the updated card data back to parent component
+      const updatedCard = {
+        id: card.id,
+        ...cardData
+      };
+      onCardUpdated(updatedCard);
+      
       onClose();
     } catch (error) {
       console.error('Error updating card: ', error);

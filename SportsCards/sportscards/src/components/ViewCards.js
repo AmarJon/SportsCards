@@ -135,6 +135,15 @@ function ViewCards() {
     setShowEditModal(true);
   };
 
+  // Handle card update
+  const handleCardUpdated = (updatedCard) => {
+    setCards(prevCards => 
+      prevCards.map(card => 
+        card.id === updatedCard.id ? updatedCard : card
+      )
+    );
+  };
+
   // Handle delete from modal
   const handleDeleteFromModal = async (cardId) => {
     setCardToDelete(cardId);
@@ -753,18 +762,15 @@ function ViewCards() {
                             {card.set && (
                               <p><span className="font-medium">Set:</span> {card.set}</p>
                             )}
-                            {card.cardNumber && (
-                              <p><span className="font-medium">Card #:</span> {card.cardNumber}</p>
-                            )}
-                            {card.graded === 'Yes' && card.grade && (
-                              <p><span className="font-medium">Grade:</span> {card.grade}</p>
-                            )}
-                            {card.graded === 'Yes' && card.gradingCompany && card.gradeNumber && (
-                              <p><span className="font-medium">Graded:</span> {card.gradingCompany} {card.gradeNumber}</p>
-                            )}
-                            {card.graded === 'No' && (
-                              <p><span className="font-medium">Graded:</span> No</p>
-                            )}
+                                                         {card.cardNumber && (
+                               <p><span className="font-medium">Card #:</span> {card.cardNumber}</p>
+                             )}
+                             {card.graded === 'Yes' && card.gradingCompany && card.gradeNumber && (
+                               <p><span className="font-medium">Graded:</span> {card.gradingCompany} {card.gradeNumber}</p>
+                             )}
+                             {card.graded === 'No' && (
+                               <p><span className="font-medium">Graded:</span> No</p>
+                             )}
                             {card.notes && (
                               <p><span className="font-medium">Notes:</span> {card.notes}</p>
                             )}
@@ -870,7 +876,7 @@ function ViewCards() {
           setSelectedCard(null);
         }}
         card={selectedCard}
-        onCardUpdated={fetchCards}
+        onCardUpdated={handleCardUpdated}
       />
 
       {/* Confirmation Modal */}

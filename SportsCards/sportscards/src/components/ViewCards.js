@@ -43,6 +43,13 @@ const rangeSliderStyles = `
   }
 `;
 
+// Placeholder component for cards without images
+const CardImagePlaceholder = ({ className, children }) => (
+  <div className={`${className} bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400`}>
+    {children}
+  </div>
+);
+
 function ViewCards() {
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,6 +62,7 @@ function ViewCards() {
   const [filterSet, setFilterSet] = useState('');
   const [filterGradingCompanies, setFilterGradingCompanies] = useState([]);
   const [filterGradeRange, setFilterGradeRange] = useState('');
+  const [filterHasImage, setFilterHasImage] = useState('');
   const [availableManufacturers, setAvailableManufacturers] = useState([]);
   const [availableSets, setAvailableSets] = useState([]);
   const [filtersExpanded, setFiltersExpanded] = useState(true);
@@ -176,8 +184,11 @@ function ViewCards() {
         filterGradeRange === '8-9' ? parseInt(card.gradeNumber) >= 8 && parseInt(card.gradeNumber) <= 9 :
         filterGradeRange === '6-8' ? parseInt(card.gradeNumber) >= 6 && parseInt(card.gradeNumber) <= 8 :
         filterGradeRange === '1-6' ? parseInt(card.gradeNumber) >= 1 && parseInt(card.gradeNumber) <= 6 : true));
+    const matchesHasImage = filterHasImage === '' || 
+      (filterHasImage === 'with' && card.imageUrl) || 
+      (filterHasImage === 'without' && !card.imageUrl);
     
-         return matchesSearch && matchesSport && matchesYear && matchesManufacturer && matchesSet && matchesGradingCompanies && matchesGradeRange;
+         return matchesSearch && matchesSport && matchesYear && matchesManufacturer && matchesSet && matchesGradingCompanies && matchesGradeRange && matchesHasImage;
   });
 
   // Sort the filtered cards
@@ -277,6 +288,19 @@ function ViewCards() {
     };
   }, []);
 
+  // Clear all filters
+  const clearAllFilters = () => {
+    setSearchTerm('');
+    setFilterSport('');
+    setFilterYearStart('');
+    setFilterYearEnd('');
+    setFilterManufacturer('');
+    setFilterSet('');
+    setFilterGradingCompanies([]);
+    setFilterGradeRange('');
+    setFilterHasImage('');
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -327,7 +351,7 @@ function ViewCards() {
          </div>
          
          {/* Active Filter Indicators */}
-                   {(searchTerm || filterSport || filterYearStart || filterYearEnd || filterManufacturer || filterSet || filterGradingCompanies.length > 0 || filterGradeRange) && (
+                   {(searchTerm || filterSport || filterYearStart || filterYearEnd || filterManufacturer || filterSet || filterGradingCompanies.length > 0 || filterGradeRange || filterHasImage) && (
            <div className="mb-6">
              <div className="flex flex-wrap gap-2 justify-center">
                {searchTerm && (
@@ -412,6 +436,17 @@ function ViewCards() {
                    </button>
                  </span>
                )}
+               {filterHasImage && (
+                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
+                   {filterHasImage === 'with' ? 'With Images' : 'Without Images'}
+                   <button
+                     onClick={() => setFilterHasImage('')}
+                     className="ml-2 text-teal-600 hover:text-teal-800"
+                   >
+                     ×
+                   </button>
+                 </span>
+               )}
              </div>
            </div>
          )}
@@ -424,16 +459,7 @@ function ViewCards() {
                <div className="flex items-center justify-between mb-4">
                  <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
                  <button
-                                       onClick={() => {
-                      setSearchTerm('');
-                      setFilterSport('');
-                      setFilterYearStart('');
-                      setFilterYearEnd('');
-                      setFilterManufacturer('');
-                      setFilterSet('');
-                                             setFilterGradingCompanies([]);
-                       setFilterGradeRange('');
-                    }}
+                                       onClick={clearAllFilters}
                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
                  >
                    Clear All
@@ -626,6 +652,20 @@ function ViewCards() {
                      <option value="1-6">1-6 (Poor to Very Good)</option>
                    </select>
                  </div>
+
+                 {/* Image Filter */}
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-2">Image Status</label>
+                   <select 
+                     value={filterHasImage} 
+                     onChange={(e) => setFilterHasImage(e.target.value)}
+                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                   >
+                     <option value="">All Cards</option>
+                     <option value="with">With Images</option>
+                     <option value="without">Without Images</option>
+                   </select>
+                 </div>
                </div>
              </div>
            </div>
@@ -700,7 +740,7 @@ function ViewCards() {
                            {/* Results Summary */}
               <div className="text-center text-sm text-gray-600 mb-6">
                 Showing {sortedCards.length} of {cards.length} cards
-                                 {(searchTerm || filterSport || filterYearStart || filterYearEnd || filterManufacturer || filterSet || filterGradingCompanies.length > 0 || filterGradeRange) && (
+                                 {(searchTerm || filterSport || filterYearStart || filterYearEnd || filterManufacturer || filterSet || filterGradingCompanies.length > 0 || filterGradeRange || filterHasImage) && (
                   <span className="ml-2 text-blue-600">(filtered)</span>
                 )}
               </div>
@@ -729,6 +769,31 @@ function ViewCards() {
                     >
                       {viewMode === 'grid' && (
                         <>
+                          {/* Card Image */}
+                          <div className="mb-4 flex justify-center">
+                            {card.imageUrl ? (
+                              <img
+                                src={card.imageUrl}
+                                alt={`${card.player} card`}
+                                className="w-full h-48 object-cover rounded-lg border border-gray-200 shadow-sm"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                  e.target.nextSibling.style.display = 'flex';
+                                }}
+                              />
+                            ) : null}
+                            {!card.imageUrl && (
+                              <CardImagePlaceholder className="w-full h-48 rounded-lg">
+                                <div className="text-center">
+                                  <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                  </svg>
+                                  <p className="text-sm">No Image</p>
+                                </div>
+                              </CardImagePlaceholder>
+                            )}
+                          </div>
+                          
                           <div className="flex justify-between items-start mb-4">
                             <h3 className="text-xl font-semibold text-gray-900">
                               {card.player}
@@ -762,15 +827,15 @@ function ViewCards() {
                             {card.set && (
                               <p><span className="font-medium">Set:</span> {card.set}</p>
                             )}
-                                                         {card.cardNumber && (
-                               <p><span className="font-medium">Card #:</span> {card.cardNumber}</p>
-                             )}
-                             {card.graded === 'Yes' && card.gradingCompany && card.gradeNumber && (
-                               <p><span className="font-medium">Graded:</span> {card.gradingCompany} {card.gradeNumber}</p>
-                             )}
-                             {card.graded === 'No' && (
-                               <p><span className="font-medium">Graded:</span> No</p>
-                             )}
+                            {card.cardNumber && (
+                              <p><span className="font-medium">Card #:</span> {card.cardNumber}</p>
+                            )}
+                            {card.graded === 'Yes' && card.gradingCompany && card.gradeNumber && (
+                              <p><span className="font-medium">Graded:</span> {card.gradingCompany} {card.gradeNumber}</p>
+                            )}
+                            {card.graded === 'No' && (
+                              <p><span className="font-medium">Graded:</span> No</p>
+                            )}
                             {card.notes && (
                               <p><span className="font-medium">Notes:</span> {card.notes}</p>
                             )}
@@ -780,6 +845,29 @@ function ViewCards() {
 
                       {viewMode === 'compact' && (
                         <div className="text-center">
+                          {/* Card Image */}
+                          <div className="mb-2">
+                            {card.imageUrl ? (
+                              <img
+                                src={card.imageUrl}
+                                alt={`${card.player} card`}
+                                className="w-full h-24 object-cover rounded border border-gray-200"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                  e.target.nextSibling.style.display = 'flex';
+                                }}
+                              />
+                            ) : null}
+                            {!card.imageUrl && (
+                              <CardImagePlaceholder className="w-full h-24 rounded">
+                                <div className="text-center">
+                                  <svg className="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                  </svg>
+                                </div>
+                              </CardImagePlaceholder>
+                            )}
+                          </div>
                           <h4 className="font-semibold text-gray-900 text-sm mb-1 truncate">
                             {card.player}
                           </h4>
@@ -816,9 +904,34 @@ function ViewCards() {
 
                       {viewMode === 'list' && (
                         <>
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-gray-900">{card.player}</h4>
-                            <p className="text-sm text-gray-600">{card.year} {card.manufacturer} - {card.sport}</p>
+                          <div className="flex items-center space-x-4 flex-1">
+                            {/* Card Image */}
+                            <div className="flex-shrink-0">
+                              {card.imageUrl ? (
+                                <img
+                                  src={card.imageUrl}
+                                  alt={`${card.player} card`}
+                                  className="w-16 h-20 object-cover rounded border border-gray-200"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                    e.target.nextSibling.style.display = 'flex';
+                                  }}
+                                />
+                              ) : null}
+                              {!card.imageUrl && (
+                                <CardImagePlaceholder className="w-16 h-20 rounded">
+                                  <div className="text-center">
+                                    <svg className="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                  </div>
+                                </CardImagePlaceholder>
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-gray-900">{card.player}</h4>
+                              <p className="text-sm text-gray-600">{card.year} {card.manufacturer} - {card.sport}</p>
+                            </div>
                           </div>
                           <div className="flex items-center space-x-2">
                             <button
